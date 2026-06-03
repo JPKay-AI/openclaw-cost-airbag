@@ -3,6 +3,8 @@
 Small operational scripts for diagnosing and stopping accidental high-frequency
 OpenClaw heartbeat/model runs.
 
+Version: v0.2
+
 ## Why
 
 Agent runtimes can become expensive when background wakeups repeatedly start
@@ -25,8 +27,10 @@ cd openclaw-cost-airbag
 
 ### `scripts/01-diagnose-heartbeat-cost.sh`
 
-Scans recent Codex/OpenClaw session logs and prints token-count summaries for
-large runs.
+Scans recent OpenClaw agent JSONL logs and prints token-count summaries for
+large runs. It is provider-neutral at the log-scanning layer: Codex/OpenAI,
+Claude, Gemini, or other providers are included when OpenClaw writes compatible
+`token_count` events.
 
 ```sh
 ./scripts/01-diagnose-heartbeat-cost.sh
@@ -81,7 +85,12 @@ openclaw gateway restart
 These scripts do not delete sessions or change model credentials. They only
 patch heartbeat defaults and inspect local logs/status.
 
+The heartbeat shutdown script is OpenClaw-level and provider-independent. The
+diagnosis script depends on OpenClaw session logs containing `token_count`
+events; provider-specific logs without those events may not be summarized.
+
 ## Status
 
-This is an early field-tested toolkit. Review paths and config output before
-using it in production or on shared systems.
+Field-tested with OpenClaw + Codex/OpenAI on macOS. v0.2 broadens log scanning
+to OpenClaw agent JSONL logs across providers, while keeping the heartbeat guard
+at the OpenClaw config level.

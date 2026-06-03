@@ -1,21 +1,14 @@
 # TODO: Publish OpenClaw Cost Airbag
 
-## Before Publishing
+## v0.2 Publishing
 
-- Review README wording and decide whether to publish in German, English, or both.
 - Run `bash -n scripts/*.sh`.
+- Run `./scripts/01-diagnose-heartbeat-cost.sh "yesterday 21:00"` locally.
 - Run `./scripts/03-verify-cost-airbag.sh` locally.
 - Check that no secrets are present with `rg -n "sk-|token|refresh|botToken|Bearer|password|secret" .`.
-- Decide repository name, recommended: `openclaw-cost-airbag`.
-- Add screenshots or terminal output only after redacting paths, account names, tokens, and emails.
-
-## GitHub Release Steps
-
-- Create a new public GitHub repository named `openclaw-cost-airbag`.
-- Add this folder as the initial project contents.
-- Commit with a clear message, for example: `Initial OpenClaw cost airbag toolkit`.
-- Push to GitHub.
-- Add a short repository description: `Diagnose and stop runaway OpenClaw heartbeat token usage`.
+- Commit v0.2 changes.
+- Push `main`.
+- Create/push tag `v0.2`.
 - Add topics: `openclaw`, `agents`, `cost-control`, `heartbeat`, `llmops`, `automation`.
 
 ## Announcement Text
@@ -28,6 +21,10 @@ German version:
 
 > Ich habe ein kleines OpenClaw Cost-Airbag-Toolkit veröffentlicht, nachdem ein echter Heartbeat-Loop einen großen Teil des Wochenlimits verbraucht hat. Es hilft dabei, solche Läufe zu diagnostizieren, die Heartbeat-Schleife sicher abzuschalten und den Gateway-Status zu prüfen.
 
+v0.2 add-on:
+
+> v0.2 scans OpenClaw agent JSONL logs more broadly instead of only Codex session paths. The heartbeat guard itself is provider-independent at the OpenClaw config level.
+
 ## Where To Share
 
 - GitHub repository README
@@ -37,6 +34,7 @@ German version:
 
 ## Follow-Up Improvements
 
+- Add explicit Claude/Gemini fixture coverage once sample logs are available.
 - Add macOS/Linux restart detection.
 - Add optional `--apply` confirmation mode.
 - Add JSON output for automation.
