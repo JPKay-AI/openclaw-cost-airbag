@@ -3,7 +3,7 @@
 Small operational scripts for diagnosing and stopping accidental high-frequency
 OpenClaw heartbeat/model runs.
 
-Version: v0.2
+Version: v0.3
 
 ## Why
 
@@ -11,11 +11,13 @@ Agent runtimes can become expensive when background wakeups repeatedly start
 large-context model turns. A 30 minute heartbeat loop with a large default model
 can consume a weekly quota before anyone notices.
 
-This toolkit provides a simple three-step response:
+This toolkit provides a simple four-step response:
 
 1. Diagnose recent heartbeat/token usage.
 2. Disable expensive default heartbeat cadence.
 3. Verify that the gateway is running with the guard active.
+4. Check for related local background runaways such as short-interval
+   LaunchAgents, growing OpenClaw logs, hook relays, and stale memory indexes.
 
 ## Scripts
 
@@ -54,11 +56,28 @@ restart the gateway.
 
 ### `scripts/03-verify-cost-airbag.sh`
 
-Prints current heartbeat config and OpenClaw status lines relevant to heartbeat
-and gateway state.
+Prints current heartbeat config, OpenClaw status lines relevant to heartbeat
+and gateway state, and a compact background runaway check.
 
 ```sh
 ./scripts/03-verify-cost-airbag.sh
+```
+
+### `scripts/04-diagnose-background-runaways.sh`
+
+Read-only local guard for non-heartbeat loops that can still make an agent
+runtime expensive or sluggish. It checks OpenClaw-related LaunchAgents, short
+sample log growth, suspicious high-CPU hook/node/device processes, and memory
+index readiness.
+
+```sh
+./scripts/04-diagnose-background-runaways.sh
+```
+
+Shorter or longer log sample:
+
+```sh
+./scripts/04-diagnose-background-runaways.sh --sample-seconds 10
 ```
 
 ## Guard Policy
@@ -78,6 +97,7 @@ When you suspect a runaway heartbeat loop:
 ./scripts/02-disable-heartbeat-cost-loop.sh
 openclaw gateway restart
 ./scripts/03-verify-cost-airbag.sh
+./scripts/04-diagnose-background-runaways.sh
 ```
 
 ## Notes
@@ -93,4 +113,5 @@ events; provider-specific logs without those events may not be summarized.
 
 Field-tested with OpenClaw + Codex/OpenAI on macOS. v0.2 broadens log scanning
 to OpenClaw agent JSONL logs across providers, while keeping the heartbeat guard
-at the OpenClaw config level.
+at the OpenClaw config level. v0.3 adds local runaway checks for LaunchAgents,
+logs, hook/node/device processes, and memory index health.

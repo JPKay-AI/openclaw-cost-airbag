@@ -34,6 +34,8 @@ v0.2 add-on:
 
 ## Follow-Up Improvements
 
+- Add fixture tests for `04-diagnose-background-runaways.sh` using sample plist
+  and log files.
 - Add explicit Claude/Gemini fixture coverage once sample logs are available.
 - Add macOS/Linux restart detection.
 - Add optional `--apply` confirmation mode.
